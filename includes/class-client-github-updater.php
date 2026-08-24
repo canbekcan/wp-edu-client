@@ -103,6 +103,32 @@ class WP_EDU_Client_Github_Updater {
         return $transient;
     }
 
+    private function get_github_readme() {
+        $cache_key = 'wp_edu_readme_' . $this->repo_name;
+        $readme_html = get_transient( $cache_key );
+
+        if ( false === $readme_html ) {
+            $url = "https://api.github.com/repos/{$this->repo_user}/{$this->repo_name}/readme";
+            
+            $response = wp_remote_get( $url, [
+                'headers' => [
+                    'Accept'     => 'application/vnd.github.html', // GitHub'ın doğrudan HTML döndürmesini sağlar
+                    'User-Agent' => 'WordPress/' . get_bloginfo( 'version' ) . '; ' . home_url()
+                ],
+                'timeout' => 10
+            ] );
+
+            if ( ! is_wp_error( $response ) && wp_remote_retrieve_response_code( $response ) === 200 ) {
+                $readme_html = wp_remote_retrieve_body( $response );
+                set_transient( $cache_key, $readme_html, 12 * HOUR_IN_SECONDS );
+            } else {
+                $readme_html = '<p>Açıklama yüklenemedi.</p>';
+            }
+        }
+
+        return $readme_html;
+    }
+
     public function plugin_popup_info( $result, $action, $args ) {
         if ( $action !== 'plugin_information' || empty( $args->slug ) || $args->slug !== $this->plugin_slug ) {
             return $result;
@@ -117,7 +143,7 @@ class WP_EDU_Client_Github_Updater {
         $obj->name          = 'BEKCAN Institute (Student)';
         $obj->slug          = $this->plugin_slug;
         $obj->version       = ltrim( $github_data->tag_name, 'v' );
-        $obj->author        = '<a href="https://bekcan.com">BEKCAN Institute</a>';
+        $obj->author        = '<a href="https://bekcan.com">Can Bekcan / BEKCAN Institute</a>';
         $obj->homepage      = 'https://bekcan.com';
         $obj->download_link = $github_data->zipball_url;
         
@@ -126,25 +152,23 @@ class WP_EDU_Client_Github_Updater {
         $obj->tested        = '6.7';
         $obj->requires_php  = '7.4';
         $obj->last_updated  = date( 'Y-m-d', strtotime( $github_data->published_at ) );
-        $obj->active_installs = 100;
         
-        // Header Banner Görselleri (Deponuzdaki raw linkleri veya doğrudan URL verilebilir)
+        // Görseller
         $obj->banners = [
             'low'  => 'https://raw.githubusercontent.com/' . $this->repo_user . '/' . $this->repo_name . '/main/assets/banner-772x250.png',
             'high' => 'https://raw.githubusercontent.com/' . $this->repo_user . '/' . $this->repo_name . '/main/assets/banner-1544x500.png',
         ];
 
-        // İkon Görselleri
         $obj->icons = [
             '1x' => 'https://raw.githubusercontent.com/' . $this->repo_user . '/' . $this->repo_name . '/main/assets/icon-128x128.png',
             '2x' => 'https://raw.githubusercontent.com/' . $this->repo_user . '/' . $this->repo_name . '/main/assets/icon-256x256.png',
         ];
 
-        // Sekmeler (Tabs)
+        // Sekmeler
         $obj->sections = [
-            'description'  => '<h3>Öğrenci LMS İstemcisi</h3><p>WordPress tabanlı öğrenci web sitelerini merkezi Host LMS altyapısına bağlar; içerik analitiği, revizyon takibi ve duyuru akışı sağlar.</p>',
-            'installation' => '<h4>Kurulum Adımları</h4><ol><li>Eklentiyi etkinleştirin.</li><li><strong>BEKCAN EDU</strong> menüsüne gidin.</li><li>Host LMS tarafından sağlanan API anahtarlarınızı girin.</li></ol>',
-            'changelog'    => wp_kses_post( wpautop( $github_data->body ) ),
+            'description' => wp_kses_post( $this->get_github_readme() ),
+            'changelog'   => wp_kses_post( wpautop( $github_data->body ) ),
+            'installation' => '<h4>Kurulum Adımları</h4><ol><li>Eklentiyi etkinleştirin.</li><li><strong>LMS Bağlantı</strong> menüsüne gidin.</li><li>Host LMS tarafından sağlanan API anahtarlarınızı girin.</li></ol>',
             'faq'          => '<h4>Host bağlantısı nasıl doğrulanır?</h4><p>Ayarlar sayfasındaki durum göstergesi yeşil yandığında bağlantı aktiftir.</p>',
         ];
 
