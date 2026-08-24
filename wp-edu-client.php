@@ -29,35 +29,35 @@ require_once WP_EDU_CLIENT_DIR . 'includes/api/class-client-endpoint-updates.php
 require_once WP_EDU_CLIENT_DIR . 'includes/api/class-client-endpoint-notices.php';
 require_once WP_EDU_CLIENT_DIR . 'includes/class-client-github-updater.php';
 
-if ( is_admin() ) {
-    new WP_EDU_Client_Github_Updater( 'canbekcan', 'wp-edu-client', __FILE__ );
+// if ( is_admin() ) {
+//     new WP_EDU_Client_Github_Updater( 'canbekcan', 'wp-edu-client', __FILE__ );
     
-    // HATA AYIKLAMA KODU (TEST BİTİNCE SİLECEĞİZ)
-    add_action( 'admin_notices', function() {
-        $url = "https://api.github.com/repos/canbekcan/wp-edu-client/releases/latest";
-        $response = wp_remote_get( $url, ['headers' => ['User-Agent' => 'WordPress-Debug']] );
+//     // HATA AYIKLAMA KODU (TEST BİTİNCE SİLECEĞİZ)
+//     add_action( 'admin_notices', function() {
+//         $url = "https://api.github.com/repos/canbekcan/wp-edu-client/releases/latest";
+//         $response = wp_remote_get( $url, ['headers' => ['User-Agent' => 'WordPress-Debug']] );
         
-        if ( is_wp_error( $response ) ) {
-            echo '<div class="notice notice-error is-dismissible"><p><strong>GitHub API Bağlantı Hatası:</strong> ' . esc_html( $response->get_error_message() ) . '</p></div>';
-            return;
-        }
+//         if ( is_wp_error( $response ) ) {
+//             echo '<div class="notice notice-error is-dismissible"><p><strong>GitHub API Bağlantı Hatası:</strong> ' . esc_html( $response->get_error_message() ) . '</p></div>';
+//             return;
+//         }
         
-        $code = wp_remote_retrieve_response_code( $response );
-        $body = json_decode( wp_remote_retrieve_body( $response ) );
-        $tag  = isset( $body->tag_name ) ? $body->tag_name : 'Sürüm (Tag) Bulunamadı';
-        $msg  = isset( $body->message ) ? $body->message : 'Mesaj Yok';
+//         $code = wp_remote_retrieve_response_code( $response );
+//         $body = json_decode( wp_remote_retrieve_body( $response ) );
+//         $tag  = isset( $body->tag_name ) ? $body->tag_name : 'Sürüm (Tag) Bulunamadı';
+//         $msg  = isset( $body->message ) ? $body->message : 'Mesaj Yok';
         
-        $color = ($code === 200) ? 'notice-success' : 'notice-error';
-        echo "<div class='notice {$color} is-dismissible'>
-                <p><strong>GitHub API Durumu (Test İçindir):</strong></p>
-                <ul style='list-style-type:disc; margin-left:20px;'>
-                    <li>HTTP Kodu: <strong>{$code}</strong></li>
-                    <li>Sistemdeki Son Sürüm: <strong>{$tag}</strong></li>
-                    <li>GitHub Mesajı: <strong>{$msg}</strong></li>
-                </ul>
-              </div>";
-    });
-}
+//         $color = ($code === 200) ? 'notice-success' : 'notice-error';
+//         echo "<div class='notice {$color} is-dismissible'>
+//                 <p><strong>GitHub API Durumu (Test İçindir):</strong></p>
+//                 <ul style='list-style-type:disc; margin-left:20px;'>
+//                     <li>HTTP Kodu: <strong>{$code}</strong></li>
+//                     <li>Sistemdeki Son Sürüm: <strong>{$tag}</strong></li>
+//                     <li>GitHub Mesajı: <strong>{$msg}</strong></li>
+//                 </ul>
+//               </div>";
+//     });
+// }
 
 
 // --- Sınıfları Başlat ---
@@ -72,6 +72,6 @@ new WP_EDU_Client_Endpoint_Notices();
 
 
 
-#if ( is_admin() ) {
-#    new WP_EDU_Client_Github_Updater( 'canbekcan', 'wp-edu-client', __FILE__ );
-#}
+if ( is_admin() ) {
+    new WP_EDU_Client_Github_Updater( 'canbekcan', 'wp-edu-client', __FILE__ );
+}
