@@ -2,7 +2,7 @@
 /**
  * Plugin Name: WP EDU Client (Student - User Centric)
  * Description: Connects individual student accounts to the Host LMS for targeted content analytics and revision tracking.
- * Version: 1.5.0
+ * Version: 1.5.1
  * Author: Can Bekcan
  * Text Domain: wp-edu-client
  * Domain Path: /languages
