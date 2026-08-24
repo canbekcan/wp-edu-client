@@ -41,5 +41,5 @@ new WP_EDU_Client_Endpoint_Notices();
 
 
 if ( is_admin() ) {
-    new WP_EDU_Client_Github_Updater( 'canbekcan', 'REPO_ADINIZ', __FILE__ );
+    new WP_EDU_Client_Github_Updater( 'canbekcan', 'wp-edu-client', __FILE__ );
 }
