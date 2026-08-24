@@ -36,7 +36,7 @@ class WP_EDU_Client_Github_Updater {
             
             if ( ! is_wp_error( $response ) && wp_remote_retrieve_response_code( $response ) === 200 ) {
                 $data = json_decode( wp_remote_retrieve_body( $response ) );
-                // TEST İÇİN: 1 Saniye. Test bitince bunu "12 * HOUR_IN_SECONDS" olarak değiştirin.
+                // Test sürecinde olduğumuz için hafızada 1 saniye tutuyoruz
                 set_transient( $cache_key, $data, 1 ); 
             }
         }
@@ -53,14 +53,11 @@ class WP_EDU_Client_Github_Updater {
             return $transient;
         }
 
-        // ÇÖZÜM 1: get_plugin_data yerine versiyonu doğrudan transient'ten alıyoruz (Çökmeyi engeller).
         $current_version = isset( $transient->checked[$this->plugin_slug] ) ? $transient->checked[$this->plugin_slug] : '0.0.0';
         $new_version     = ltrim( $github_data->tag_name, 'v' ); 
 
         if ( version_compare( $current_version, $new_version, '<' ) ) {
             $obj = new stdClass();
-            
-            // ÇÖZÜM 2: WordPress'in beklediği slug ve plugin ayrımı
             $obj->slug        = dirname( $this->plugin_slug );
             $obj->plugin      = $this->plugin_slug;
             $obj->new_version = $new_version;
@@ -98,13 +95,22 @@ class WP_EDU_Client_Github_Updater {
     public function fix_github_folder_name( $source, $remote_source, $upgrader ) {
         global $wp_filesystem;
         
-        // ÇÖZÜM 3: GitHub'ın uzattığı klasör adını kesip orijinal eklenti ismine (wp-edu-client) geri çeviriyoruz.
-        if ( isset( $source ) && strpos( basename( $source ), $this->repo_name ) !== false ) {
+        if ( ! $wp_filesystem || ! isset( $source ) ) {
+            return $source;
+        }
+        
+        // ÇÖZÜM: İndirilen ZIP klasörünün içinde 'wp-edu-client.php' dosyası var mı? (Kurşungeçirmez kontrol)
+        $main_plugin_file = basename( $this->plugin_file );
+        $source_trail     = trailingslashit( $source );
+        
+        if ( $wp_filesystem->exists( $source_trail . $main_plugin_file ) ) {
+            
+            // Eğer dosya bizim eklentimize aitse, GitHub'ın atadığı uzun ismi silip olması gereken ismi veriyoruz
             $expected_folder = trailingslashit( $remote_source ) . dirname( $this->plugin_slug );
             
-            if ( $source !== $expected_folder ) {
-                $wp_filesystem->move( $source, $expected_folder );
-                return trailingslashit( $expected_folder );
+            if ( $source_trail !== $expected_folder ) {
+                $wp_filesystem->move( $source, $expected_folder, true );
+                return $expected_folder;
             }
         }
         
