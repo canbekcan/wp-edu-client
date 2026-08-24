@@ -19,21 +19,21 @@ class WP_EDU_Client_Github_Updater {
         
         $this->github_api_url = "https://api.github.com/repos/{$repo_user}/{$repo_name}/releases/latest";
 
-        // GÜNCELLEME: Hem kaydetme hem de okuma kancalarına müdahale ediyoruz
         add_filter( 'pre_set_site_transient_update_plugins', [ $this, 'check_for_update' ] );
         add_filter( 'site_transient_update_plugins', [ $this, 'check_for_update' ] );
-        
         add_filter( 'plugins_api', [ $this, 'plugin_popup_info' ], 10, 3 );
         add_filter( 'upgrader_source_selection', [ $this, 'fix_github_folder_name' ], 10, 3 );
     }
 
     private function get_github_release() {
-        $cache_key = 'wp_edu_updater_' . $this->repo_name;
-        
-        // TEST İÇİN ÖNBELLEĞİ EZİYORUZ (Canlı kullanımda bu satırı kaldırabilirsiniz)
-        delete_transient( $cache_key ); 
+        // Sayfa içinde birden fazla filtre çalıştığında API'yi tekrar çağırmamak için statik değişken
+        static $runtime_cache = null;
+        if ( null !== $runtime_cache ) {
+            return $runtime_cache;
+        }
 
-        $data = get_transient( $cache_key );
+        $cache_key = 'wp_edu_updater_' . $this->repo_name;
+        $data      = get_transient( $cache_key );
         
         if ( false === $data ) {
             $response = wp_remote_get( $this->github_api_url, [
@@ -41,24 +41,29 @@ class WP_EDU_Client_Github_Updater {
                     'Accept'     => 'application/vnd.github.v3+json',
                     'User-Agent' => 'WordPress/' . get_bloginfo( 'version' ) . '; ' . home_url()
                 ],
-                'timeout' => 15
+                'timeout' => 10
             ]);
             
-            if ( ! is_wp_error( $response ) && wp_remote_retrieve_response_code( $response ) === 200 ) {
-                $data = json_decode( wp_remote_retrieve_body( $response ) );
-                set_transient( $cache_key, $data, 12 * HOUR_IN_SECONDS );
+            if ( ! is_wp_error( $response ) ) {
+                $code = wp_remote_retrieve_response_code( $response );
+                if ( $code === 200 ) {
+                    $data = json_decode( wp_remote_retrieve_body( $response ) );
+                    set_transient( $cache_key, $data, 6 * HOUR_IN_SECONDS );
+                } elseif ( $code === 403 ) {
+                    // Limit aşıldıysa sistemi 15 dakika boyunca tekrar istek atmaktan alıkoy
+                    set_transient( $cache_key, 'rate_limited', 15 * MINUTE_IN_SECONDS );
+                }
             }
         }
         
-        return $data;
+        $runtime_cache = ( $data === 'rate_limited' ) ? false : $data;
+        return $runtime_cache;
     }
 
     public function check_for_update( $transient ) {
         if ( ! is_object( $transient ) ) {
             $transient = new stdClass();
         }
-
-        // KRİTİK DÜZELTME: empty( $transient->checked ) kontrolü KALDIRILDI!
 
         $github_data = $this->get_github_release();
         if ( ! $github_data || empty( $github_data->tag_name ) ) {
