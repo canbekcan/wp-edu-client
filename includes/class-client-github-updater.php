@@ -104,27 +104,51 @@ class WP_EDU_Client_Github_Updater {
     }
 
     public function plugin_popup_info( $result, $action, $args ) {
-    if ( $action !== 'plugin_information' || empty( $args->slug ) || $args->slug !== $this->plugin_slug ) {
-        return $result;
-    }
+        if ( $action !== 'plugin_information' || empty( $args->slug ) || $args->slug !== $this->plugin_slug ) {
+            return $result;
+        }
 
-    $github_data = $this->get_github_release();
-    if ( ! $github_data ) return $result;
+        $github_data = $this->get_github_release();
+        if ( ! $github_data ) return $result;
 
-    $obj = new stdClass();
-    $obj->name          = 'BEKCAN Institute (Student)';
-    $obj->slug          = $this->plugin_slug;
-    $obj->version       = ltrim( $github_data->tag_name, 'v' );
-    $obj->author        = 'BEKCAN Institute';
-    $obj->homepage      = $github_data->html_url;
-    $obj->download_link = $github_data->zipball_url;
-    
-    // esc_html yerine wp_kses_post kullanarak temel HTML etiketlerine izin veriyoruz:
-    $obj->sections      = [
-        'description' => wp_kses_post( wpautop( $github_data->body ) )
-    ];
+        $obj = new stdClass();
+        
+        // Temel Bilgiler
+        $obj->name          = 'BEKCAN Institute (Student)';
+        $obj->slug          = $this->plugin_slug;
+        $obj->version       = ltrim( $github_data->tag_name, 'v' );
+        $obj->author        = '<a href="https://bekcan.com">BEKCAN Institute</a>';
+        $obj->homepage      = 'https://bekcan.com';
+        $obj->download_link = $github_data->zipball_url;
+        
+        // Yan Panel (Sidebar) Meta Verileri
+        $obj->requires      = '6.0';
+        $obj->tested        = '6.7';
+        $obj->requires_php  = '7.4';
+        $obj->last_updated  = date( 'Y-m-d', strtotime( $github_data->published_at ) );
+        $obj->active_installs = 100;
+        
+        // Header Banner Görselleri (Deponuzdaki raw linkleri veya doğrudan URL verilebilir)
+        $obj->banners = [
+            'low'  => 'https://raw.githubusercontent.com/' . $this->repo_user . '/' . $this->repo_name . '/main/assets/banner-772x250.png',
+            'high' => 'https://raw.githubusercontent.com/' . $this->repo_user . '/' . $this->repo_name . '/main/assets/banner-1544x500.png',
+        ];
 
-    return $obj;
+        // İkon Görselleri
+        $obj->icons = [
+            '1x' => 'https://raw.githubusercontent.com/' . $this->repo_user . '/' . $this->repo_name . '/main/assets/icon-128x128.png',
+            '2x' => 'https://raw.githubusercontent.com/' . $this->repo_user . '/' . $this->repo_name . '/main/assets/icon-256x256.png',
+        ];
+
+        // Sekmeler (Tabs)
+        $obj->sections = [
+            'description'  => '<h3>Öğrenci LMS İstemcisi</h3><p>WordPress tabanlı öğrenci web sitelerini merkezi Host LMS altyapısına bağlar; içerik analitiği, revizyon takibi ve duyuru akışı sağlar.</p>',
+            'installation' => '<h4>Kurulum Adımları</h4><ol><li>Eklentiyi etkinleştirin.</li><li><strong>BEKCAN EDU</strong> menüsüne gidin.</li><li>Host LMS tarafından sağlanan API anahtarlarınızı girin.</li></ol>',
+            'changelog'    => wp_kses_post( wpautop( $github_data->body ) ),
+            'faq'          => '<h4>Host bağlantısı nasıl doğrulanır?</h4><p>Ayarlar sayfasındaki durum göstergesi yeşil yandığında bağlantı aktiftir.</p>',
+        ];
+
+        return $obj;
     }
 
     public function fix_github_folder_name( $source, $remote_source, $upgrader ) {
