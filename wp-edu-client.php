@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BEKCAN Institute (Student)
  * Description: Connects individual student accounts to the Host LMS for targeted content analytics and revision tracking.
- * Version: 0.1.2.1
+ * Version: 0.1.2.2
  * Author: BEKCAN Institute
  * Text Domain: wp-edu-client
  * Domain Path: /languages
