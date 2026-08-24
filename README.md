@@ -70,11 +70,10 @@ git clone https://github.com/canbekcan/wp-edu-client.git
 
 ## ⚙️ Yapılandırma
 
-1. WordPress sol menüsünde beliren **BEKCAN EDU** (veya **WP EDU Client**) sekmesine gidin.
+1. WordPress sol menüsünde beliren **LMS Bağlan** sekmesine gidin.
 2. Host LMS tarafından size sağlanan:
 * **Host API URL**
 * **API / Client Key**
-* **Student Token**
 bilgilerini ilgili alanlara girip kaydedin.
 
 
