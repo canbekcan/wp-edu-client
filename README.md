@@ -1,4 +1,3 @@
-```markdown
 # BEKCAN Institute (Student) - WP EDU Client
 
 WordPress tabanlı öğrenci web sitelerini ana yönetim sistemine (Host LMS) bağlayan, öğrenci odaklı içerik analitiği, revizyon takibi, merkezi duyuru akışı ve otomatik güncelleme sağlayan istemci eklentisidir.
@@ -59,7 +58,7 @@ wp-edu-client/
 
 1. Bu repoyu bilgisayarınıza indirin veya klonlayın:
 ```bash
-git clone [https://github.com/canbekcan/wp-edu-client.git](https://github.com/canbekcan/wp-edu-client.git)
+git clone https://github.com/canbekcan/wp-edu-client.git
 
 ```
 
@@ -101,7 +100,7 @@ Eklenti, GitHub API'sini belirli aralıklarla sorgulayarak yeni bir Release yay�
 
 Bu proje [MIT Lisansı](https://www.google.com/search?q=LICENSE) altında lisanslanmıştır.
 
-```
+
 
 ```text
 MIT License
