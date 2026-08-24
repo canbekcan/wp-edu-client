@@ -37,7 +37,8 @@ class WP_EDU_Client_Github_Updater {
             
             if ( ! is_wp_error( $response ) && wp_remote_retrieve_response_code( $response ) === 200 ) {
                 $data = json_decode( wp_remote_retrieve_body( $response ) );
-                set_transient( $cache_key, $data, 12 * HOUR_IN_SECONDS );
+                # set_transient( $cache_key, $data, 12 * HOUR_IN_SECONDS );
+                set_transient( $cache_key, $data, 1 );
             }
         }
         
