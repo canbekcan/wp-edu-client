@@ -1,0 +1,177 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WP EDU Client\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-24 12:00+0000\n"
+"PO-Revision-Date: 2026-08-24 12:00+0000\n"
+"Last-Translator: Can Bekcan\n"
+"Language-Team: English (US)\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.4\n"
+"X-Domain: wp-edu-client\n"
+
+msgid "Go to Host Panel"
+msgstr "Go to Host Panel"
+
+msgid "Log in to your instructor's Host panel without a password"
+msgstr "Log in to your instructor's Host panel without a password"
+
+msgid "Connection successfully reset. Please reconnect with your new registration code."
+msgstr "Connection successfully reset. Please reconnect with your new registration code."
+
+msgid "Connection failed: %s"
+msgstr "Connection failed: %s"
+
+msgid "Successfully connected your account to the LMS Dashboard!"
+msgstr "Successfully connected your account to the LMS Dashboard!"
+
+msgid "Unknown error."
+msgstr "Unknown error."
+
+msgid "Registration denied: %s"
+msgstr "Registration denied: %s"
+
+msgid "Could not retrieve grades. Error: %s"
+msgstr "Could not retrieve grades. Error: %s"
+
+msgid "HTTP Code: %d"
+msgstr "HTTP Code: %d"
+
+msgid "Host returned an error: %s"
+msgstr "Host returned an error: %s"
+
+msgid "Student Connection Dashboard (%s)"
+msgstr "Student Connection Dashboard (%s)"
+
+msgid "Status: Connected"
+msgstr "Status: Connected"
+
+msgid "Your account (%s) is linked to the Host LMS."
+msgstr "Your account (%s) is linked to the Host LMS."
+
+msgid "Are you sure you want to disconnect? Your data on the host will not be deleted, but you will need to enter a registration code again."
+msgstr "Are you sure you want to disconnect? Your data on the host will not be deleted, but you will need to enter a registration code again."
+
+msgid "Disconnect"
+msgstr "Disconnect"
+
+msgid "Host LMS URL"
+msgstr "Host LMS URL"
+
+msgid "Registration Code"
+msgstr "Registration Code"
+
+msgid "Enter the code provided by your instructor for your specific class."
+msgstr "Enter the code provided by your instructor for your specific class."
+
+msgid "Reconnect / Update"
+msgstr "Reconnect / Update"
+
+msgid "Connect Account"
+msgstr "Connect Account"
+
+msgid "Host Panel"
+msgstr "Host Panel"
+
+msgid "Go to the main administration to see detailed notifications and reports from your instructor."
+msgstr "Go to the main administration to see detailed notifications and reports from your instructor."
+
+msgid "Go to Host (SSO)"
+msgstr "Go to Host (SSO)"
+
+msgid "My Content Performance & Grades"
+msgstr "My Content Performance & Grades"
+
+msgid "Post Title"
+msgstr "Post Title"
+
+msgid "Date Sent"
+msgstr "Date Sent"
+
+msgid "Speed (WPM)"
+msgstr "Speed (WPM)"
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Grade"
+msgstr "Grade"
+
+msgid "No content has been scanned by the host yet. Data will appear after the next synchronization."
+msgstr "No content has been scanned by the host yet. Data will appear after the next synchronization."
+
+msgid "Words"
+msgstr "Words"
+
+msgid "Min"
+msgstr "Min"
+
+msgid "MODIFIED"
+msgstr "MODIFIED"
+
+msgid "ORIGINAL"
+msgstr "ORIGINAL"
+
+msgid "Instructor Notice:"
+msgstr "Instructor Notice:"
+
+msgid "Instructor Notice"
+msgstr "Instructor Notice"
+
+msgid "Close Message"
+msgstr "Close Message"
+
+msgid "Missing token."
+msgstr "Missing token."
+
+msgid "Invalid or unassigned API Token."
+msgstr "Invalid or unassigned API Token."
+
+msgid "Author identification failed."
+msgstr "Author identification failed."
+
+msgid "Notice cleared."
+msgstr "Notice cleared."
+
+msgid "Notice updated."
+msgstr "Notice updated."
+
+msgid "LMS Connection"
+msgstr "LMS Connection"
+
+msgid "LMS Connect"
+msgstr "LMS Connect"
+
+msgid "Error: view-client-settings.php file is missing."
+msgstr "Error: view-client-settings.php file is missing."
+
+msgid "d"
+msgstr "d"
+
+msgid "h"
+msgstr "h"
+
+msgid "m"
+msgstr "m"
+
+msgid "Total Contents"
+msgstr "Total Contents"
+
+msgid "Average Grade"
+msgstr "Average Grade"
+
+msgid "My LMS Performance"
+msgstr "My LMS Performance"
+
+msgid "You are not connected to any LMS Host."
+msgstr "You are not connected to any LMS Host."
+
+msgid "Connect Now"
+msgstr "Connect Now"
+
+msgid "View Details"
+msgstr "View Details"
