@@ -36,7 +36,7 @@ class WP_EDU_Client_Github_Updater {
             
             if ( ! is_wp_error( $response ) && wp_remote_retrieve_response_code( $response ) === 200 ) {
                 $data = json_decode( wp_remote_retrieve_body( $response ) );
-                // Test sürecinde olduğumuz için hafızada 1 saniye tutuyoruz
+                // Test sürecinde olduğumuz için hafızada 1 saniye tutuyoruz. Test bitince 12 * HOUR_IN_SECONDS yapın.
                 set_transient( $cache_key, $data, 1 ); 
             }
         }
@@ -99,18 +99,26 @@ class WP_EDU_Client_Github_Updater {
             return $source;
         }
         
-        // ÇÖZÜM: İndirilen ZIP klasörünün içinde 'wp-edu-client.php' dosyası var mı? (Kurşungeçirmez kontrol)
-        $main_plugin_file = basename( $this->plugin_file );
-        $source_trail     = trailingslashit( $source );
+        $source_trail = trailingslashit( $source );
+        $main_file    = basename( $this->plugin_file );
         
-        if ( $wp_filesystem->exists( $source_trail . $main_plugin_file ) ) {
+        // Bu klasörün içinde bizim eklenti ana dosyamız var mı? (Gelen güncellemenin bize ait olduğunu doğrular)
+        if ( $wp_filesystem->exists( $source_trail . $main_file ) ) {
             
-            // Eğer dosya bizim eklentimize aitse, GitHub'ın atadığı uzun ismi silip olması gereken ismi veriyoruz
+            // Olması gereken doğru klasör adı (wp-edu-client)
             $expected_folder = trailingslashit( $remote_source ) . dirname( $this->plugin_slug );
             
             if ( $source_trail !== $expected_folder ) {
-                $wp_filesystem->move( $source, $expected_folder, true );
-                return $expected_folder;
+                // KRİTİK ÇÖZÜM: Hedef klasör (wp-edu-client) wp-content/upgrade içinde zaten varsa, move() işlemi reddedilir!
+                // Önceki başarısız denemelerden kalan çöp klasörleri temizle:
+                if ( $wp_filesystem->exists( $expected_folder ) ) {
+                    $wp_filesystem->delete( $expected_folder, true );
+                }
+                
+                // Klasörün yolunu açtığımıza göre GitHub'ın atadığı uzun "hash" ismini doğru klasör adıyla güvenle değiştirebiliriz.
+                if ( $wp_filesystem->move( $source, $expected_folder, true ) ) {
+                    return $expected_folder;
+                }
             }
         }
         
