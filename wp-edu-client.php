@@ -61,7 +61,6 @@ require_once WP_EDU_CLIENT_DIR . 'includes/class-client-github-updater.php';
 
 
 // --- Sınıfları Başlat ---
-new WP_EDU_Client_Auth();
 new WP_EDU_Client_Menu();
 new WP_EDU_Client_Notices();
 new WP_EDU_Client_Tracking();
@@ -69,8 +68,6 @@ new WP_EDU_Client_SSO();
 new WP_EDU_Client_Endpoint_Content();
 new WP_EDU_Client_Endpoint_Updates();
 new WP_EDU_Client_Endpoint_Notices();
-
-
 
 if ( is_admin() ) {
     new WP_EDU_Client_Github_Updater( 'canbekcan', 'wp-edu-client', __FILE__ );

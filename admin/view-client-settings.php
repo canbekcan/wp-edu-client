@@ -8,17 +8,15 @@ if ( isset( $_POST['disconnect_lms'] ) && check_admin_referer( 'edu_disconnect_n
     delete_user_meta( $current_user_id, 'lms_api_token' );
     delete_user_meta( $current_user_id, 'lms_host_url' );
     echo '<div class="updated notice is-dismissible"><p>' . esc_html__( 'Connection successfully reset. Please reconnect with your new registration code.', 'wp-edu-client' ) . '</p></div>';
-}
+} 
 
 if ( isset( $_POST['connect_lms'] ) && check_admin_referer( 'edu_connect_nonce' ) ) {
     $host_url = esc_url_raw( $_POST['host_url'] );
     $reg_code = sanitize_text_field( $_POST['registration_code'] );
-    
     $student_email = $current_user->user_email;
     $site_url      = site_url();
-
     $endpoint = rtrim( $host_url, '/' ) . '/wp-json/lms/v1/register';
-
+    
     $response = wp_remote_post( $endpoint, [
         'headers' => [ 'Content-Type' => 'application/json' ],
         'body'    => wp_json_encode([
@@ -34,7 +32,7 @@ if ( isset( $_POST['connect_lms'] ) && check_admin_referer( 'edu_connect_nonce' 
     } else {
         $status_code = wp_remote_retrieve_response_code( $response );
         $body = json_decode( wp_remote_retrieve_body( $response ), true );
-
+        
         if ( $status_code === 200 && isset( $body['api_token'] ) ) {
             update_user_meta( $current_user_id, 'lms_api_token', sanitize_text_field( $body['api_token'] ) );
             update_user_meta( $current_user_id, 'lms_host_url', $host_url );
@@ -44,58 +42,59 @@ if ( isset( $_POST['connect_lms'] ) && check_admin_referer( 'edu_connect_nonce' 
             echo '<div class="error"><p>' . sprintf( esc_html__( 'Registration denied: %s', 'wp-edu-client' ), esc_html( $error_msg ) ) . '</p></div>';
         }
     }
-}
+} 
 
 $saved_token = get_user_meta( $current_user_id, 'lms_api_token', true );
 $saved_host  = get_user_meta( $current_user_id, 'lms_host_url', true );
-
-$host_url   = ! empty( $saved_host ) ? $saved_host : ''; 
-$api_token  = $saved_token; 
+$host_url    = ! empty( $saved_host ) ? $saved_host : ''; 
+$api_token   = $saved_token; 
 $student_sso_link = ! empty( $host_url ) ? rtrim( $host_url, '/' ) . '/?wp_edu_sso=' . $api_token : '#';
 
-$grades_data = [];
 $api_error = '';
-
 $total_posts_count = 0;
 $average_grade     = 0;
+$grades_data       = [];
+$transient_key     = 'lms_settings_grades_' . $current_user_id;
 
 if ( $saved_token && ! empty( $host_url ) ) {
-    $grades_endpoint = rtrim( $host_url, '/' ) . '/wp-json/lms/v1/grades?token=' . $api_token . '&_t=' . time();
+    $grades_data = get_transient( $transient_key );
     
-    $grades_response = wp_remote_get( $grades_endpoint, [
-        'headers' => [ 'Authorization' => 'Bearer ' . $api_token ],
-        'timeout' => 15
-    ]);
-
-    if ( is_wp_error( $grades_response ) ) {
-        $api_error = sprintf( __( 'Could not retrieve grades. Error: %s', 'wp-edu-client' ), $grades_response->get_error_message() );
-    } else {
-        $status_code = wp_remote_retrieve_response_code( $grades_response );
-        $body_raw    = wp_remote_retrieve_body( $grades_response );
-        $body        = json_decode( $body_raw, true );
+    if ( false === $grades_data ) {
+        $grades_endpoint = rtrim( $host_url, '/' ) . '/wp-json/lms/v1/grades?token=' . $api_token . '&_t=' . time();
+        $grades_response = wp_remote_get( $grades_endpoint, [
+            'headers' => [ 'Authorization' => 'Bearer ' . $api_token ],
+            'timeout' => 15
+        ]);
         
-        if ( $status_code === 200 && isset($body['status']) && $body['status'] === 'success' ) {
-            $grades_data = $body['data'];
-            
-            // --- Kümülatif Ortalama Hesaplaması ---
-            $total_posts_count = count( $grades_data );
-            $total_cumulative_grade = 0;
-            
-            if ( $total_posts_count > 0 ) {
-                foreach ( $grades_data as $g ) {
-                    $total_cumulative_grade += intval( $g['grade'] );
-                }
-                $average_grade = round( $total_cumulative_grade / $total_posts_count );
-            }
-            
+        if ( is_wp_error( $grades_response ) ) {
+            $api_error = sprintf( __( 'Could not retrieve grades. Error: %s', 'wp-edu-client' ), $grades_response->get_error_message() );
         } else {
-            $error_detail = isset($body['message']) ? $body['message'] : sprintf( __( 'HTTP Code: %d', 'wp-edu-client' ), $status_code );
-            $api_error = sprintf( __( 'Host returned an error: %s', 'wp-edu-client' ), $error_detail );
+            $status_code = wp_remote_retrieve_response_code( $grades_response );
+            $body_raw    = wp_remote_retrieve_body( $grades_response );
+            $body        = json_decode( $body_raw, true );
+            
+            if ( $status_code === 200 && isset($body['status']) && $body['status'] === 'success' ) {
+                $grades_data = $body['data'];
+                set_transient( $transient_key, $grades_data, 5 * MINUTE_IN_SECONDS ); // 5 Dakikalık önbellek
+            } else {
+                $error_detail = isset($body['message']) ? $body['message'] : sprintf( __( 'HTTP Code: %d', 'wp-edu-client' ), $status_code );
+                $api_error = sprintf( __( 'Host returned an error: %s', 'wp-edu-client' ), $error_detail );
+            }
+        }
+    }
+
+    if ( is_array( $grades_data ) ) {
+        $total_posts_count = count( $grades_data );
+        $total_cumulative_grade = 0;
+        if ( $total_posts_count > 0 ) {
+            foreach ( $grades_data as $g ) {
+                $total_cumulative_grade += intval( $g['grade'] );
+            }
+            $average_grade = round( $total_cumulative_grade / $total_posts_count );
         }
     }
 }
 
-// Ortalama Not Renk Kodu
 $avg_grade_color = '#00a32a';
 if ( $average_grade < 50 ) $avg_grade_color = '#d63638';
 elseif ( $average_grade < 75 ) $avg_grade_color = '#dba617';
@@ -150,7 +149,6 @@ elseif ( $average_grade < 75 ) $avg_grade_color = '#dba617';
         <?php if ( $saved_token ) : ?>
         <div style="flex: 2; min-width: 500px; margin-top: 20px; background:#fff; border:1px solid #ccd0d4; box-shadow:0 1px 1px rgba(0,0,0,.04);">
             
-            <!-- YENİ: Başlık ve Skor Panosu (Flex Layout) -->
             <div style="padding: 15px; border-bottom: 1px solid #ccd0d4; background: #f8f9fa; display: flex; justify-content: space-between; align-items: center;">
                 <h3 style="margin:0;"><?php esc_html_e( 'My Content Performance & Grades', 'wp-edu-client' ); ?></h3>
                 

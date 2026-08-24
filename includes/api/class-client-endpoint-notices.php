@@ -2,7 +2,6 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 class WP_EDU_Client_Endpoint_Notices {
-
     public function __construct() {
         add_action( 'rest_api_init', [ $this, 'register_route' ] );
     }
@@ -16,9 +15,9 @@ class WP_EDU_Client_Endpoint_Notices {
     }
 
     public function handle_request( WP_REST_Request $request ) {
-        $message = sanitize_textarea_field( $request->get_param( 'message' ) );
+        $message = wp_kses_post( $request->get_param( 'message' ) );
         $type    = sanitize_text_field( $request->get_param( 'type' ) );
-        $id      = sanitize_text_field( $request->get_param( 'id' ) ); 
+        $id      = sanitize_text_field( $request->get_param( 'id' ) );
 
         if ( empty( $message ) ) {
             delete_option( 'lms_host_admin_notice' );

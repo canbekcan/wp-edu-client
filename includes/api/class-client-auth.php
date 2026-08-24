@@ -11,19 +11,30 @@ class WP_EDU_Client_Auth {
         }
 
         $token = str_replace( 'Bearer ', '', $auth_header );
+        $token_hash = md5( $token );
+        
+        $user_id = get_transient( 'lms_auth_user_' . $token_hash );
 
-        $users = get_users([
-            'meta_key'   => 'lms_api_token',
-            'meta_value' => $token,
-            'number'     => 1
-        ]);
+        if ( false === $user_id ) {
+            $users = get_users([
+                'meta_key'   => 'lms_api_token',
+                'meta_value' => $token,
+                'number'     => 1,
+                'fields'     => 'ID'
+            ]);
 
-        if ( empty( $users ) ) {
-            return new WP_Error( 'forbidden', __( 'Invalid or unassigned API Token.', 'wp-edu-client' ), [ 'status' => 403 ] );
+            if ( empty( $users ) ) {
+                return new WP_Error( 'forbidden', __( 'Invalid or unassigned API Token.', 'wp-edu-client' ), [ 'status' => 403 ] );
+            }
+
+            $user_id = $users[0];
+            
+            set_transient( 'lms_auth_user_' . $token_hash, $user_id, 12 * HOUR_IN_SECONDS );
         }
 
-        wp_set_current_user( $users[0]->ID );
-        $request->set_param( 'student_user_id', $users[0]->ID );
+        wp_set_current_user( $user_id );
+        $request->set_param( 'student_user_id', $user_id );
+        
         return true;
     }
 }

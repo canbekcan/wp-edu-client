@@ -1,5 +1,4 @@
 <?php
-
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
     exit;
 }
@@ -19,10 +18,8 @@ delete_transient( 'wp_edu_updater_wp-edu-client' );
 delete_transient( 'wp_edu_readme_wp-edu-client' );
 
 global $wpdb;
-
 $wpdb->query( "DELETE FROM {$wpdb->usermeta} WHERE meta_key = 'wp_edu_sso_token'" );
 $wpdb->query( "DELETE FROM {$wpdb->usermeta} WHERE meta_key = 'wp_edu_student_id'" );
-
 $wpdb->query( "DELETE FROM {$wpdb->postmeta} WHERE meta_key = '_wp_edu_sync_status'" );
 $wpdb->query( "DELETE FROM {$wpdb->postmeta} WHERE meta_key = '_wp_edu_revision_id'" );
 
