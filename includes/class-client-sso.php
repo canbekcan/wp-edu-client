@@ -16,7 +16,9 @@ class WP_EDU_Client_SSO {
 
         if ( empty( $saved_token ) || empty( $saved_host ) ) return;
 
-        $student_sso_link = rtrim( $saved_host, '/' ) . '/?wp_edu_sso=' . $saved_token;
+        $sso_time = time();
+        $sso_hash = hash( 'sha256', $saved_token . $sso_time );
+        $student_sso_link = rtrim( $saved_host, '/' ) . '/?wp_edu_sso=' . $saved_token . '&t=' . $sso_time . '&h=' . $sso_hash;
 
         $args = array(
             'id'    => 'lms_sso_shortcut',

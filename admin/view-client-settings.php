@@ -48,7 +48,9 @@ $saved_token = get_user_meta( $current_user_id, 'lms_api_token', true );
 $saved_host  = get_user_meta( $current_user_id, 'lms_host_url', true );
 $host_url    = ! empty( $saved_host ) ? $saved_host : ''; 
 $api_token   = $saved_token; 
-$student_sso_link = ! empty( $host_url ) ? rtrim( $host_url, '/' ) . '/?wp_edu_sso=' . $api_token : '#';
+$sso_time = time();
+$sso_hash = hash( 'sha256', $api_token . $sso_time );
+$student_sso_link = ! empty( $host_url ) ? rtrim( $host_url, '/' ) . '/?wp_edu_sso=' . $api_token . '&t=' . $sso_time . '&h=' . $sso_hash : '#';
 
 $api_error = '';
 $total_posts_count = 0;
