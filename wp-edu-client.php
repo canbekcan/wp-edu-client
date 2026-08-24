@@ -69,4 +69,52 @@ new WP_EDU_Client_Endpoint_Notices();
 
 if ( is_admin() ) {
     new WP_EDU_Client_Github_Updater( 'canbekcan', 'wp-edu-client', __FILE__ );
+
+    /* add_action( 'admin_init', function() {
+        if ( isset( $_GET['force_gh_check'] ) && $_GET['force_gh_check'] == '1' ) {
+            
+            delete_site_transient( 'update_plugins' );
+            
+            delete_transient( 'wp_edu_updater_wp-edu-client' );
+            delete_transient( 'wp_edu_readme_wp-edu-client' );
+            
+            wp_safe_redirect( remove_query_arg( 'force_gh_check' ) );
+            exit;
+        }
+    });
+
+    add_action( 'admin_notices', function() {
+        $url = "https://api.github.com/repos/canbekcan/wp-edu-client/releases/latest";
+        $response = wp_remote_get( $url, ['headers' => ['User-Agent' => 'WordPress-Debug']] );
+        
+        if ( is_wp_error( $response ) ) {
+            echo '<div class="notice notice-error is-dismissible"><p><strong>GitHub API Bağlantı Hatası:</strong> ' . esc_html( $response->get_error_message() ) . '</p></div>';
+            return;
+        }
+        
+        $code = wp_remote_retrieve_response_code( $response );
+        $body = json_decode( wp_remote_retrieve_body( $response ) );
+        $tag  = isset( $body->tag_name ) ? $body->tag_name : 'Sürüm (Tag) Bulunamadı';
+        $msg  = isset( $body->message ) ? $body->message : 'Mesaj Yok';
+        
+        $color = ($code === 200) ? 'notice-success' : 'notice-error';
+        
+        $reset_url = add_query_arg( 'force_gh_check', '1' );
+
+        echo "<div class='notice {$color} is-dismissible'>
+                <div style='display:flex; justify-content:space-between; align-items:center;'>
+                    <div>
+                        <p><strong>GitHub API Durumu (Test İçindir):</strong></p>
+                        <ul style='list-style-type:disc; margin-left:20px;'>
+                            <li>HTTP Kodu: <strong>{$code}</strong></li>
+                            <li>Sistemdeki Son Sürüm: <strong>{$tag}</strong></li>
+                            <li>GitHub Mesajı: <strong>{$msg}</strong></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <a href='" . esc_url( $reset_url ) . "' class='button button-primary' style='background:#d63638; border-color:#d63638; text-shadow:none;'>Önbelleği Sıfırla ve Yenile</a>
+                    </div>
+                </div>
+              </div>";
+    }); */
 }
