@@ -49,7 +49,7 @@ wp-edu-client/
 
 ### Yöntem 1: GitHub Release Üzerinden Yükleme (Tavsiye Edilen)
 
-1. Projenin [Releases](https://www.google.com/search?q=https://github.com/canbekcan/wp-edu-client/releases) sayfasından en son sürümün ZIP arşivini indirin.
+1. Projenin [Releases](https://github.com/canbekcan/wp-edu-client/releases) sayfasından en son sürümün ZIP arşivini indirin.
 2. WordPress Yönetim Paneline gidin: **Eklentiler -> Yeni Eklenti Ekle -> Eklenti Yükle**.
 3. İndirdiğiniz `.zip` dosyasını seçip **Şimdi Kur** butonuna tıklayın.
 4. Eklentiyi etkinleştirin.
