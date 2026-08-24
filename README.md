@@ -1,36 +1,38 @@
 # BEKCAN Institute (Student) - WP EDU Client
 
-WordPress tabanlı öğrenci web sitelerini ana yönetim sistemine (Host LMS) bağlayan, öğrenci odaklı içerik analitiği, revizyon takibi, merkezi duyuru akışı ve otomatik güncelleme sağlayan istemci eklentisidir.
+🇹🇷 [Türkçe](https://github.com/canbekcan/wp-edu-client/blob/main/README-tr.md)
+
+A client plugin that connects WordPress-based student websites to the main management system (Host LMS), providing student-focused content analytics, revision tracking, a centralized notice feed, and automated updates.
 
 ---
 
-## 🚀 Özellikler
+## 🚀 Features
 
-* **Merkezi LMS Entegrasyonu:** Öğrenci sitelerinin içerik metriklerini, revizyon geçmişini ve yayın durumlarını ana yönetim paneline iletir.
-* **Kullanıcı Doğrulama & SSO:** Host LMS üzerinden güvenli API anahtarı doğrulaması ve tek oturum açma (Single Sign-On) desteği.
-* **Merkezi Duyuru Akışı:** Eğitmen veya enstitü tarafından yayınlanan duyuruların doğrudan öğrencinin WordPress panosuna düşürülmesi.
-* **Bağımsız GitHub Güncelleyici:** Harici kütüphane bağımlılığı olmadan çalışan, yeni GitHub sürümlerini denetleyip WordPress panelinden doğrudan güncelleme yapabilen yerel güncelleme motoru.
-* **Çoklu Dil Desteği (i18n):** Türkçe (`tr_TR`) ve İngilizce (`en_US`) dil dosyalarıyla tam uyumluluk.
+* **Centralized LMS Integration:** Transmits content metrics, revision history, and publication statuses of student sites to the main dashboard.
+* **User Authentication & SSO:** Secure API key verification via the Host LMS and Single Sign-On (SSO) support.
+* **Centralized Notice Feed:** Pushes notices published by the instructor or institute directly to the student's WordPress dashboard.
+* **Independent GitHub Updater:** A native update engine that operates without external library dependencies, checking for new GitHub releases and allowing direct updates from the WordPress dashboard.
+* **Multilingual Support (i18n):** Full compatibility with Turkish (`tr_TR`) and English (`en_US`) language files.
 
 ---
 
-## 📁 Dizin Yapısı
+## 📁 Directory Structure
 
 ```text
 wp-edu-client/
 ├── admin/
-│   ├── class-client-menu.php        # Yönetici menüsü ve ayar sayfaları
-│   └── view-client-settings.php     # Ayarlar ekranı şablonu
+│   ├── class-client-menu.php        # Admin menu and settings pages
+│   └── view-client-settings.php     # Settings screen template
 ├── includes/
 │   ├── api/
-│   │   ├── class-client-auth.php              # API yetkilendirme katmanı
-│   │   ├── class-client-endpoint-content.php  # İçerik senkronizasyon endpoint'i
-│   │   ├── class-client-endpoint-notices.php  # Duyuru senkronizasyon endpoint'i
-│   │   └── class-client-endpoint-updates.php  # Güncelleme bildirim endpoint'i
-│   ├── class-client-github-updater.php        # GitHub Release güncelleme motoru
-│   ├── class-client-notices.php               # Pano duyuru mekanizması
-│   ├── class-client-sso.php                   # SSO doğrulama mekanizması
-│   └── class-client-tracking.php              # İçerik ve revizyon izleme
+│   │   ├── class-client-auth.php              # API authorization layer
+│   │   ├── class-client-endpoint-content.php  # Content synchronization endpoint
+│   │   ├── class-client-endpoint-notices.php  # Notice synchronization endpoint
+│   │   └── class-client-endpoint-updates.php  # Update notification endpoint
+│   ├── class-client-github-updater.php        # GitHub Release update engine
+│   ├── class-client-notices.php               # Dashboard notice mechanism
+│   ├── class-client-sso.php                   # SSO verification mechanism
+│   └── class-client-tracking.php              # Content and revision tracking
 ├── languages/
 │   ├── wp-edu-client-en_US.mo
 │   ├── wp-edu-client-en_US.po
@@ -39,67 +41,64 @@ wp-edu-client/
 ├── LICENSE
 ├── README.md
 ├── uninstall.php
-└── wp-edu-client.php                # Eklenti ana çekirdek dosyası
+└── wp-edu-client.php                # Main plugin core file
 
 ```
 
 ---
 
-## 🛠️ Kurulum
+## 🛠️ Installation
 
-### Yöntem 1: GitHub Release Üzerinden Yükleme (Tavsiye Edilen)
+### Method 1: Installation via GitHub Release (Recommended)
 
-1. Projenin [Releases](https://github.com/canbekcan/wp-edu-client/releases) sayfasından en son sürümün ZIP arşivini indirin.
-2. WordPress Yönetim Paneline gidin: **Eklentiler -> Yeni Eklenti Ekle -> Eklenti Yükle**.
-3. İndirdiğiniz `.zip` dosyasını seçip **Şimdi Kur** butonuna tıklayın.
-4. Eklentiyi etkinleştirin.
+1. Download the ZIP archive of the latest version from the project's [Releases](https://github.com/canbekcan/wp-edu-client/releases) page.
+2. Go to the WordPress Admin Dashboard: **Plugins -> Add New Plugin -> Upload Plugin**.
+3. Select the downloaded `.zip` file and click the **Install Now** button.
+4. Activate the plugin.
 
-### Yöntem 2: Manuel Kurulum
+### Method 2: Manual Installation
 
-1. Bu repoyu bilgisayarınıza indirin veya klonlayın:
+1. Download or clone this repository to your computer:
+
 ```bash
-git clone https://github.com/canbekcan/wp-edu-client.git
+git clone [https://github.com/canbekcan/wp-edu-client.git](https://github.com/canbekcan/wp-edu-client.git)
 
 ```
 
-
-2. Klasörü `wp-content/plugins/wp-edu-client` dizinine taşıyın.
-3. WordPress paneli üzerinden eklentiyi etkinleştirin.
+2. Move the folder to the `wp-content/plugins/wp-edu-client` directory.
+3. Activate the plugin via the WordPress dashboard.
 
 ---
 
-## ⚙️ Yapılandırma
+## ⚙️ Configuration
 
-1. WordPress sol menüsünde beliren **LMS Bağlan** sekmesine gidin.
-2. Host LMS tarafından size sağlanan:
+1. Go to the **Connect LMS** tab that appears in the left menu of WordPress.
+2. Enter the information provided to you by the Host LMS into the respective fields and save:
+
 * **Host API URL**
 * **API / Client Key**
-bilgilerini ilgili alanlara girip kaydedin.
 
-
-3. Bağlantı durumunu kontrol ederek entegrasyonu tamamlayın.
+3. Check the connection status to complete the integration.
 
 ---
 
-## 🔄 Güncelleme Yönetimi
+## 🔄 Update Management
 
-Eklenti, GitHub API'sini belirli aralıklarla sorgulayarak yeni bir Release yayınlandığında WordPress **Başlangıç -> Güncellemeler** ve **Eklentiler** ekranlarında standart WordPress bildirimleri üretir. Güncellemeyi doğrudan panelden tek tıkla tamamlayabilirsiniz.
-
----
-
-## 📋 Gereksinimler
-
-* **PHP:** 7.4 veya üzeri
-* **WordPress:** 6.0 veya üzeri
-* **PHP Eklentileri:** `cURL`, `OpenSSL`, `JSON`
+The plugin periodically queries the GitHub API. When a new Release is published, it generates standard WordPress notifications on the **Dashboard -> Updates** and **Plugins** screens. You can complete the update with a single click directly from the dashboard.
 
 ---
 
-## 📄 Lisans
+## 📋 Requirements
 
-Bu proje [MIT Lisansı](https://www.google.com/search?q=LICENSE) altında lisanslanmıştır.
+* **PHP:** 7.4 or higher
+* **WordPress:** 6.0 or higher
+* **PHP Extensions:** `cURL`, `OpenSSL`, `JSON`
 
+---
 
+## 📄 License
+
+This project is licensed under the [MIT License](https://www.google.com/search?q=LICENSE).
 
 ```text
 MIT License
