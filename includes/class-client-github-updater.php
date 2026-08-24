@@ -26,7 +26,6 @@ class WP_EDU_Client_Github_Updater {
     }
 
     private function get_github_release() {
-        // Sayfa içinde birden fazla filtre çalıştığında API'yi tekrar çağırmamak için statik değişken
         static $runtime_cache = null;
         if ( null !== $runtime_cache ) {
             return $runtime_cache;
@@ -50,7 +49,6 @@ class WP_EDU_Client_Github_Updater {
                     $data = json_decode( wp_remote_retrieve_body( $response ) );
                     set_transient( $cache_key, $data, 6 * HOUR_IN_SECONDS );
                 } elseif ( $code === 403 ) {
-                    // Limit aşıldıysa sistemi 15 dakika boyunca tekrar istek atmaktan alıkoy
                     set_transient( $cache_key, 'rate_limited', 15 * MINUTE_IN_SECONDS );
                 }
             }
@@ -112,7 +110,7 @@ class WP_EDU_Client_Github_Updater {
             
             $response = wp_remote_get( $url, [
                 'headers' => [
-                    'Accept'     => 'application/vnd.github.html', // GitHub'ın doğrudan HTML döndürmesini sağlar
+                    'Accept'     => 'application/vnd.github.html',
                     'User-Agent' => 'WordPress/' . get_bloginfo( 'version' ) . '; ' . home_url()
                 ],
                 'timeout' => 10
@@ -139,7 +137,6 @@ class WP_EDU_Client_Github_Updater {
 
         $obj = new stdClass();
         
-        // Temel Bilgiler
         $obj->name          = 'BEKCAN Institute (Student)';
         $obj->slug          = $this->plugin_slug;
         $obj->version       = ltrim( $github_data->tag_name, 'v' );
@@ -147,13 +144,11 @@ class WP_EDU_Client_Github_Updater {
         $obj->homepage      = 'https://bekcan.com';
         $obj->download_link = $github_data->zipball_url;
         
-        // Yan Panel (Sidebar) Meta Verileri
         $obj->requires      = '6.0';
         $obj->tested        = '6.7';
         $obj->requires_php  = '7.4';
         $obj->last_updated  = date( 'Y-m-d', strtotime( $github_data->published_at ) );
         
-        // Görseller
         $obj->banners = [
             'low'  => 'https://raw.githubusercontent.com/' . $this->repo_user . '/' . $this->repo_name . '/main/assets/banner-772x250.png',
             'high' => 'https://raw.githubusercontent.com/' . $this->repo_user . '/' . $this->repo_name . '/main/assets/banner-1544x500.png',
@@ -164,7 +159,6 @@ class WP_EDU_Client_Github_Updater {
             '2x' => 'https://raw.githubusercontent.com/' . $this->repo_user . '/' . $this->repo_name . '/main/assets/icon-256x256.png',
         ];
 
-        // Sekmeler
         $obj->sections = [
             'description' => wp_kses_post( $this->get_github_readme() ),
             'changelog'   => wp_kses_post( wpautop( $github_data->body ) ),

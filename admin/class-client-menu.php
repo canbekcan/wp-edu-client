@@ -29,7 +29,6 @@ class WP_EDU_Client_Menu {
         }
     }
 
-    // --- YENİ: Başlangıç Sayfası (Dashboard) Skor Panosu ---
     public function register_dashboard_widget() {
         wp_add_dashboard_widget(
             'lms_student_performance_widget',
@@ -43,7 +42,6 @@ class WP_EDU_Client_Menu {
         $saved_token     = get_user_meta( $current_user_id, 'lms_api_token', true );
         $saved_host      = get_user_meta( $current_user_id, 'lms_host_url', true );
 
-        // Bağlantı yoksa uyarı göster
         if ( empty( $saved_token ) || empty( $saved_host ) ) {
             echo '<div style="text-align: center; padding: 15px 0;">';
             echo '<p style="color:#666; margin-bottom:15px;">' . esc_html__( 'You are not connected to any LMS Host.', 'wp-edu-client' ) . '</p>';
@@ -52,7 +50,6 @@ class WP_EDU_Client_Menu {
             return;
         }
 
-        // Performans: WP Dashboard'u yavaşlatmamak için notları 5 dakikalık Transient (Önbellek) ile çekiyoruz.
         $transient_key = 'lms_grades_cache_' . $current_user_id;
         $grades_data   = get_transient( $transient_key );
         $api_error     = '';
@@ -69,7 +66,7 @@ class WP_EDU_Client_Menu {
                 
                 if ( $status_code === 200 && isset($body['status']) && $body['status'] === 'success' ) {
                     $grades_data = $body['data'];
-                    set_transient( $transient_key, $grades_data, 5 * MINUTE_IN_SECONDS ); // 5 dakika hafızada tut
+                    set_transient( $transient_key, $grades_data, 5 * MINUTE_IN_SECONDS );
                 } else {
                     $api_error = __( 'Host returned an error.', 'wp-edu-client' );
                 }
