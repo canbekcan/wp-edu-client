@@ -1,8 +1,8 @@
 <?php
 /**
- * Plugin Name: WP EDU Client (Student - User Centric)
+ * Plugin Name: BEKCAN Institute (Student)
  * Description: Connects individual student accounts to the Host LMS for targeted content analytics and revision tracking.
- * Version: 1.0.2
+ * Version: 0.0.1
  * Author: BEKCAN Institute
  * Text Domain: wp-edu-client
  * Domain Path: /languages
@@ -27,8 +27,6 @@ require_once WP_EDU_CLIENT_DIR . 'includes/api/class-client-auth.php';
 require_once WP_EDU_CLIENT_DIR . 'includes/api/class-client-endpoint-content.php';
 require_once WP_EDU_CLIENT_DIR . 'includes/api/class-client-endpoint-updates.php';
 require_once WP_EDU_CLIENT_DIR . 'includes/api/class-client-endpoint-notices.php';
-
-// --- GITHUB GÜNCELLEME SİSTEMİ (VE DEBUGGER) ---
 require_once WP_EDU_CLIENT_DIR . 'includes/class-client-github-updater.php';
 
 if ( is_admin() ) {
@@ -74,6 +72,6 @@ new WP_EDU_Client_Endpoint_Notices();
 
 
 
-if ( is_admin() ) {
-    new WP_EDU_Client_Github_Updater( 'canbekcan', 'wp-edu-client', __FILE__ );
-}
+#if ( is_admin() ) {
+#    new WP_EDU_Client_Github_Updater( 'canbekcan', 'wp-edu-client', __FILE__ );
+#}
