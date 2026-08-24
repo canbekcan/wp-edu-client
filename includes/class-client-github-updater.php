@@ -104,25 +104,27 @@ class WP_EDU_Client_Github_Updater {
     }
 
     public function plugin_popup_info( $result, $action, $args ) {
-        if ( $action !== 'plugin_information' || empty( $args->slug ) || $args->slug !== $this->plugin_slug ) {
-            return $result;
-        }
+    if ( $action !== 'plugin_information' || empty( $args->slug ) || $args->slug !== $this->plugin_slug ) {
+        return $result;
+    }
 
-        $github_data = $this->get_github_release();
-        if ( ! $github_data ) return $result;
+    $github_data = $this->get_github_release();
+    if ( ! $github_data ) return $result;
 
-        $obj = new stdClass();
-        $obj->name          = 'BEKCAN Institute (Student)';
-        $obj->slug          = $this->plugin_slug;
-        $obj->version       = ltrim( $github_data->tag_name, 'v' );
-        $obj->author        = 'BEKCAN Institute';
-        $obj->homepage      = $github_data->html_url;
-        $obj->download_link = $github_data->zipball_url;
-        $obj->sections      = [
-            'description' => 'Yayınlanan son sürüm notları:<br><br>' . nl2br( esc_html( $github_data->body ) )
-        ];
+    $obj = new stdClass();
+    $obj->name          = 'BEKCAN Institute (Student)';
+    $obj->slug          = $this->plugin_slug;
+    $obj->version       = ltrim( $github_data->tag_name, 'v' );
+    $obj->author        = 'BEKCAN Institute';
+    $obj->homepage      = $github_data->html_url;
+    $obj->download_link = $github_data->zipball_url;
+    
+    // esc_html yerine wp_kses_post kullanarak temel HTML etiketlerine izin veriyoruz:
+    $obj->sections      = [
+        'description' => wp_kses_post( wpautop( $github_data->body ) )
+    ];
 
-        return $obj;
+    return $obj;
     }
 
     public function fix_github_folder_name( $source, $remote_source, $upgrader ) {
